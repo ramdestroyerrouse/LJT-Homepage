@@ -1,0 +1,38 @@
+name: Enable Pages
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  enable:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check current Pages status
+        run: |
+          echo "=== GET /repos/${{ github.repository }}/pages ==="
+          curl -s -o /tmp/pages_status.json -w "HTTP %{http_code}\n" \
+            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            https://api.github.com/repos/${{ github.repository }}/pages || true
+          cat /tmp/pages_status.json || true
+          echo ""
+          echo "=== GET workflow permissions ==="
+          curl -s -w "\nHTTP %{http_code}\n" \
+            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Accept: application/vnd.github+json" \
+            https://api.github.com/repos/${{ github.repository }}/actions/permissions/workflow || true
+      - name: Try to create Pages site
+        run: |
+          echo "=== POST /repos/${{ github.repository }}/pages ==="
+          curl -s -w "\nHTTP %{http_code}\n" -X POST \
+            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            -d '{"build_type":"workflow"}' \
+            https://api.github.com/repos/${{ github.repository }}/pages || true
