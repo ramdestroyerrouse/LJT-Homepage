@@ -1,0 +1,25 @@
+name: Enable Pages
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  enable:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Enable Pages via gh CLI
+        run: |
+          echo "=== Trying gh api to create Pages site ==="
+          gh api --method POST /repos/${{ github.repository }}/pages \
+            -f build_type=legacy \
+            -f 'source[branch]=gh-pages' \
+            -f 'source[path]=/' || echo "POST failed"
+          echo "=== Checking Pages status ==="
+          gh api /repos/${{ github.repository }}/pages || echo "GET failed"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
