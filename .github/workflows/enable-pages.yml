@@ -1,0 +1,25 @@
+name: Enable Pages
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  enable:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Try to enable Pages via configure-pages
+        id: pages
+        uses: actions/configure-pages@v5
+        with:
+          enablement: true
+      - name: Show pages info
+        run: |
+          echo "base_path: ${{ steps.pages.outputs.base_path }}"
+          echo "base_url: ${{ steps.pages.outputs.base_url }}"
+          echo "origin: ${{ steps.pages.outputs.origin }}"
+          echo "host: ${{ steps.pages.outputs.host }}"
