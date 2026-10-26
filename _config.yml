@@ -141,9 +141,23 @@ include:
 
 # Exclude from processing
 exclude:
+  - .devcontainer
+  - .github
+  - AGENTS.md
+  - Dockerfile
+  - docker-compose.yaml
   - Gemfile
   - Gemfile.lock
+  - LICENSE
+  - README.md
+  - markdown_generator
   - node_modules
+  - package.json
+  - scripts
+  - talkmap
+  - talkmap.ipynb
+  - talkmap.py
+  - talkmap_out.ipynb
   - vendor/bundle/
   - vendor/cache/
   - vendor/gems/
